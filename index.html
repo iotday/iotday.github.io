@@ -4,47 +4,13 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimun-scale=1.0">
 	<title>Iot</title>
+	<script src="./build/main.js"></script>
+	<link rel="stylesheet" href="./build/main.css">
 </head>
-<style>
-	@charset "utf-8";
-	body {
-	  color: #DDD;
-	  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Microsoft YaHei UI', 'Microsoft JhengHei UI';
-	  font-size: 16px;
-	  background-color: #222;
-	  padding: 0;
-	  margin: 0;
-	  border: 0 none transparent;
-	}
-	a,
-	a:visited {
-	  color: #FD0;
-	  text-decoration: none;
-	}
-	a:hover,
-	a:active {
-	  color: #F80;
-	  text-decoration: underline;
-	}
-	.title{
-		text-align: center;
-	}
-</style>
-<script>
-	function foo(response) {
-	  var meta = response.meta;
-	  var data = response.data;
-	  console.log(meta);
-	  console.log(data);
-	}
-
-	var script = document.createElement('script');
-	script.src = 'https://api.github.com/repos/iotday/explore-iot?callback=foo';
-
-	document.getElementsByTagName('head')[0].appendChild(script);
-</script>
+	<script>
+		new page.default();
+	</script>
 <body>
-	<h1 class="title">Iotday -- A future-oriented plan for iot</h1>
 
 </body>
 </html>

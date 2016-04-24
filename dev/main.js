@@ -51,16 +51,14 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	// import indexTpl from './tpl.html'
+
 
 	var _jquery = __webpack_require__(1);
 
 	var _jquery2 = _interopRequireDefault(_jquery);
 
-	var _tpl = __webpack_require__(3);
-
-	var _tpl2 = _interopRequireDefault(_tpl);
-
-	__webpack_require__(5);
+	__webpack_require__(3);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70,12 +68,39 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 		function Page() {
 			_classCallCheck(this, Page);
 
-			this.__initialize();
+			this.initialize();
 		}
 
 		_createClass(Page, [{
-			key: '__initialize',
-			value: function __initialize() {}
+			key: 'initialize',
+			value: function initialize() {
+				(0, _jquery2.default)("body").html('\n\t\t  <h1 class="title">Iotday -- A future-oriented plan for iot</h1>\n\t\t  <div class="item-wrap"></div>\n\t\t');
+				this.renderItem();
+			}
+		}, {
+			key: 'renderItem',
+			value: function renderItem() {
+				var _this = this;
+
+				_jquery2.default.ajax({
+					url: 'https://api.github.com/repos/iotday/explore-iot',
+					dataType: 'jsonp',
+					jsonp: 'callback'
+				}).done(function (data) {
+					_this.renderCard(data.data);
+				}).fail(function (err) {
+					console.log(err);
+				});
+			}
+		}, {
+			key: 'renderCard',
+			value: function renderCard(info) {
+				console.log(info);
+				var ct = info.created_at.split('T')[0];
+
+				var html = '\n\t\t\t<div class="item-header">' + info.name + '</div>\n\t\t\t<div class="item-body">\n\t\t\t\t<div class="desc">' + info.description + '</div>\n\t\t\t\t<div class="other">\n\t\t\t\t\t<span class="github-btn">\n\t\t\t\t\t\t<a class="gh-btn" href="' + info.html_url + '" target="_blank" aria-label="Star on GitHub">\n\t\t\t\t\t\t\t<span class="gh-ico" aria-hidden="true"></span>\n\t\t\t\t\t\t\t<span class="gh-text" id="gh-text">Star</span>\n\t\t\t\t\t\t</a> \n\t\t\t\t\t\t<a style="display: block;" class="gh-count" id="gh-count" href="' + info.html_url + '/stargazers" target="_blank" aria-label="' + info.stargazers_count + ' stargazers on GitHub">' + info.stargazers_count + '</a>\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="create-time"><span class="icon"></span>' + ct + '</span>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t';
+				(0, _jquery2.default)('.item-wrap').append(html);
+			}
 		}]);
 
 		return Page;
@@ -1702,111 +1727,13 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var nunjucks = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"exports?nunjucks!nunjucks/browser/nunjucks-slim\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
-	var env;
-	if (!nunjucks.currentEnv){
-		env = nunjucks.currentEnv = new nunjucks.Environment([], { autoescape: true });
-	} else {
-		env = nunjucks.currentEnv;
-	}
-	var dependencies = nunjucks.webpackDependencies || (nunjucks.webpackDependencies = {});
-
-
-
-
-	var shim = __webpack_require__(4);
-
-
-	(function() {(nunjucks.nunjucksPrecompiled = nunjucks.nunjucksPrecompiled || {})["src/app/tpl.html"] = (function() {
-	function root(env, context, frame, runtime, cb) {
-	var lineno = null;
-	var colno = null;
-	var output = "";
-	try {
-	var parentTemplate = null;
-	output += "<div class=\"item-wrap\">\r\n\t\r\n</div>";
-	if(parentTemplate) {
-	parentTemplate.rootRenderFunc(env, context, frame, runtime, cb);
-	} else {
-	cb(null, output);
-	}
-	;
-	} catch (e) {
-	  cb(runtime.handleError(e, lineno, colno));
-	}
-	}
-	return {
-	root: root
-	};
-
-	})();
-	})();
-
-
-
-	module.exports = shim(nunjucks, env, nunjucks.nunjucksPrecompiled["src/app/tpl.html"] , dependencies)
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	module.exports = function (nunjucks, env, obj, dependencies) {
-
-	    var oldRoot = obj.root;
-
-	    obj.root = function (env, context, frame, runtime, ignoreMissing, cb) {
-	        var oldGetTemplate = env.getTemplate;
-	        env.getTemplate = function (name, ec, parentName, ignoreMissing, cb) {
-	            if (typeof ec === "function") {
-	                cb = ec = false;
-	            }
-	            var _require = function _require(name) {
-	                try {
-	                    // add a reference to the already resolved dependency here
-	                    return dependencies[name];
-	                } catch (e) {
-	                    if (frame.get("_require")) {
-	                        return frame.get("_require")(name);
-	                    } else {
-	                        console.warn('Could not load template "%s"', name);
-	                    }
-	                }
-	            };
-
-	            var tmpl = _require(name);
-	            frame.set("_require", _require);
-
-	            if (ec) tmpl.compile();
-	            cb(null, tmpl);
-	        };
-
-	        oldRoot(env, context, frame, runtime, ignoreMissing, function (err, res) {
-	            env.getTemplate = oldGetTemplate;
-	            cb(err, res);
-	        });
-	    };
-
-	    var src = {
-	        obj: obj,
-	        type: 'code'
-	    };
-
-	    return new nunjucks.Template(src, env);
-	};
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(6);
+	var content = __webpack_require__(4);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(8)(content, {});
+	var update = __webpack_require__(6)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -1823,21 +1750,21 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 6 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(7)();
+	exports = module.exports = __webpack_require__(5)();
 	// imports
 
 
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, "body {\n  color: #DDD;\n  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Microsoft YaHei UI', 'Microsoft JhengHei UI';\n  font-size: 16px;\n  background-color: #222;\n  padding: 0;\n  margin: 0;\n  border: 0 none transparent;\n}\nbody .title {\n  text-align: center;\n}\nbody .item-wrap {\n  max-width: 800px;\n  margin: 0 auto;\n}\nbody .item-wrap .item-header {\n  font-size: 32px;\n  margin-bottom: 5px;\n}\nbody .item-wrap .other {\n  margin-top: 20px;\n}\nbody .item-wrap .other .gh-btn:focus,\nbody .item-wrap .other .gh-btn:hover {\n  text-decoration: none;\n  background-color: #ddd;\n  border-color: #ccc;\n}\nbody .item-wrap .other .gh-btn {\n  background-color: #eee;\n  background-repeat: no-repeat;\n  border: 1px solid #d5d5d5;\n}\nbody .item-wrap .other .gh-ico {\n  width: 14px;\n  height: 14px;\n  margin-right: 4px;\n  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjQwcHgiIGhlaWdodD0iNDBweCIgdmlld0JveD0iMTIgMTIgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMTIgMTIgNDAgNDAiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIGZpbGw9IiMzMzMzMzMiIGQ9Ik0zMiAxMy40Yy0xMC41IDAtMTkgOC41LTE5IDE5YzAgOC40IDUuNSAxNS41IDEzIDE4YzEgMC4yIDEuMy0wLjQgMS4zLTAuOWMwLTAuNSAwLTEuNyAwLTMuMiBjLTUuMyAxLjEtNi40LTIuNi02LjQtMi42QzIwIDQxLjYgMTguOCA0MSAxOC44IDQxYy0xLjctMS4yIDAuMS0xLjEgMC4xLTEuMWMxLjkgMC4xIDIuOSAyIDIuOSAyYzEuNyAyLjkgNC41IDIuMSA1LjUgMS42IGMwLjItMS4yIDAuNy0yLjEgMS4yLTIuNmMtNC4yLTAuNS04LjctMi4xLTguNy05LjRjMC0yLjEgMC43LTMuNyAyLTUuMWMtMC4yLTAuNS0wLjgtMi40IDAuMi01YzAgMCAxLjYtMC41IDUuMiAyIGMxLjUtMC40IDMuMS0wLjcgNC44LTAuN2MxLjYgMCAzLjMgMC4yIDQuNyAwLjdjMy42LTIuNCA1LjItMiA1LjItMmMxIDIuNiAwLjQgNC42IDAuMiA1YzEuMiAxLjMgMiAzIDIgNS4xYzAgNy4zLTQuNSA4LjktOC43IDkuNCBjMC43IDAuNiAxLjMgMS43IDEuMyAzLjVjMCAyLjYgMCA0LjYgMCA1LjJjMCAwLjUgMC40IDEuMSAxLjMgMC45YzcuNS0yLjYgMTMtOS43IDEzLTE4LjFDNTEgMjEuOSA0Mi41IDEzLjQgMzIgMTMuNHoiLz48L3N2Zz4=);\n  background-size: 100% 100%;\n  background-repeat: no-repeat;\n}\nbody .item-wrap .other .gh-count {\n  position: relative;\n  display: none;\n  margin-left: 4px;\n  background-color: #fafafa;\n  border: 1px solid #d4d4d4;\n}\nbody .item-wrap .other .gh-btn,\nbody .item-wrap .other .gh-count {\n  padding: 2px 5px 2px 4px;\n  color: #333;\n  text-decoration: none;\n  text-shadow: 0 1px 0 #fff;\n  white-space: nowrap;\n  cursor: pointer;\n  border-radius: 3px;\n}\nbody .item-wrap .other .gh-btn,\nbody .item-wrap .other .gh-count {\n  color: #333;\n  text-shadow: 0 1px 0 #fff;\n  white-space: nowrap;\n  cursor: pointer;\n}\nbody .item-wrap .other .gh-btn,\nbody .item-wrap .other .gh-count,\nbody .item-wrap .other .gh-ico {\n  float: left;\n}\nbody .item-wrap .other .create-time {\n  float: right;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -1892,7 +1819,7 @@ define(function() { return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
