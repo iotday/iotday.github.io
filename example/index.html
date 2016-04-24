@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Iotday</title>
+	</head>
+	<script src="./require.js"></script>
+	<body>
+
+		<script>
+			requirejs.config({
+				baseUrl: '../dev',
+				urlArgs: 'bust=' + (new Date()).getTime()
+			});	 
+
+			require(['main'], function(Page) {
+				new Page.default();
+			})	
+		</script>
+		<h1 class="title">Iotday -- A future-oriented plan for iot</h1>
+	</body>
+</html>
